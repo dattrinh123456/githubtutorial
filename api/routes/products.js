@@ -5,12 +5,14 @@ const Product = require("../models/product");
 
 router.get("/", (req, res, next) => {
   Product.find()
+  .select('_id name price')
     .exec()
     .then((data) => {
       console.log(data);
       if (data.length > 0) {
         res.status(200).json({
           data,
+          length:data.length
         });
       } else {
         res.status(401).json({
@@ -84,7 +86,7 @@ router.delete("/:productId", (req, res, next) => {
   const id = req.params.productId;
   Product.deleteOne({ _id: id })
     .exec()
-    .then((data) => res.status.json({ data }))
+    .then((data) => res.status.json({ data,Message:'Product deleted' }))
     .catch((err) => res.status(500).json({ error: err }));
 });
 module.exports = router;

@@ -32,7 +32,6 @@ app.use("/orders", ordersRoute);
 
 app.use((req, res, next) => {
   const err = new Error("not Found");
-  error.status(404);
   next(err);
 });
 
