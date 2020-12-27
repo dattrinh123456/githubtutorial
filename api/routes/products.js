@@ -1,7 +1,28 @@
 const express = require("express");
+const multer = require('multer')
 const router = express();
 const mongoose = require("mongoose");
 const Product = require("../models/product");
+ 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads')
+  },
+  filename: function (req, file, cb) {
+    let mime = file.mimetype.split('/')
+    cb(null, file.fieldname + '-' + Date.now() + '.' + mime[mime.length-1] )
+  }
+})
+
+const imageFileFilter = (req, file, cb)=>{
+  if(file.mimetype=="image/jpg" || file.mimetype=="image/png" || file.mimetype == "image/jpeg"){
+     return cb(null, true)
+  }else{
+      return cb(new Error('Only image are allowed!'))
+  }
+};
+
+var upload = multer({ storage: storage,fileFilter:imageFileFilter })
 
 router.get("/", (req, res, next) => {
   Product.find()
@@ -25,12 +46,13 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", upload.single("image"), (req, res, next) => { 
+  let img = 'uploads/'+req.file.filename
   let product = new Product({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     price: req.body.price,
-    img:req.body.img
+    image:img
   });
 
   product

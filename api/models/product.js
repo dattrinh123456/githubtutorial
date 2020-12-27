@@ -5,7 +5,7 @@ const productSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: { type: String, required: true },
   price: { type: Number, required: true },
-  img: { type: String, require: true },
+  image: { type: String, require: true },
 });
 
 module.exports = mongoose.model("Product", productSchema);
