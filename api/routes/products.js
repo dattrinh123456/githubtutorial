@@ -5,14 +5,13 @@ const Product = require("../models/product");
 
 router.get("/", (req, res, next) => {
   Product.find()
-  .select('_id name price')
     .exec()
     .then((data) => {
       console.log(data);
       if (data.length > 0) {
         res.status(200).json({
           data,
-          length:data.length
+          length: data.length,
         });
       } else {
         res.status(401).json({
@@ -31,6 +30,7 @@ router.post("/", (req, res, next) => {
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     price: req.body.price,
+    img:req.body.img
   });
 
   product
@@ -86,7 +86,11 @@ router.delete("/:productId", (req, res, next) => {
   const id = req.params.productId;
   Product.deleteOne({ _id: id })
     .exec()
-    .then((data) => res.status.json({ data,Message:'Product deleted' }))
-    .catch((err) => res.status(500).json({ error: err }));
+    .then((data) =>
+      res.status(200).json({ Message: "Product Deleted", data: data })
+    )
+    .catch((err) =>
+      res.status(500).json({ Message: "Error Deleted", error: err })
+    );
 });
 module.exports = router;
